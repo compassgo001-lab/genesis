@@ -126,130 +126,87 @@
         <button onclick="nav('vault')" class="nav-btn"><span class="text-[9px] uppercase font-bold">Сейф</span></button>
     </nav>
 
-    <script>
-        // ДАННЫЕ SUPABASE
-        const SUPABASE_URL = 'https://buvkhgfgrzmimsmyznpm.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1dmtoZ2ZncnptaW1zbXl6bnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyNDU3NjEsImV4cCI6MjA4NTgyMTc2MX0.g_ZvbjVu0wlUwDnE3KyRNb2cO69Oq6QHZnUD4hK4yHQ';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+   <script>
+    // ПРОВЕРЬ ЭТИ ДАННЫЕ (Возьми со своего скрина API Settings)
+    const SUPABASE_URL = 'https://buvkhgfgrzmimsmyznpm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1dmtoZ2ZncnptaW1zbXl6bnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyNDU3NjEsImV4cCI6MjA4NTgyMTc2MX0.g_ZvbjVu0wlUwDnE3KyRNb2cO69Oq6QHZnUD4hK4yHQ';
+    
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+    let currentBalance = 0;
+    let currentUser = null;
+    let adminClicks = 0;
 
-        let currentBalance = 0;
-        let currentUser = null;
-        let adminClicks = 0;
+    async function init() {
+        try {
+            // Данные юзера из телеги
+            const user = tg.initDataUnsafe?.user || { id: 1234567, username: 'tester' };
+            document.getElementById('user-name').innerText = 'ID: @' + (user.username || user.id);
 
-        // ИНИЦИАЛИЗАЦИЯ
-        async function init() {
-            const user = tg.initDataUnsafe?.user || { id: 12345, username: 'test_user' };
-            document.getElementById('user-name').innerText = 'ID: @' + user.username;
+            // Пробуем найти профиль
+            let { data: profile, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
 
-            let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-
-            if (!profile) {
-                const { data } = await supabase.from('profiles').insert([{ id: user.id, username: user.username }]).select().single();
-                profile = data;
+            // Если юзера нет в базе - создаем
+            if (!profile || error) {
+                const { data: newUser, error: createError } = await supabaseClient
+                    .from('profiles')
+                    .insert([{ 
+                        id: user.id, 
+                        username: user.username || 'user_' + user.id,
+                        balance: 0,
+                        hashrate: 0
+                    }])
+                    .select()
+                    .single();
+                
+                if (createError) throw createError;
+                profile = newUser;
             }
 
             currentUser = profile;
-            currentBalance = parseFloat(profile.balance);
-            document.getElementById('hashrate-val').innerText = profile.hashrate + ' TH/s';
+            currentBalance = parseFloat(profile.balance || 0);
+            document.getElementById('hashrate-val').innerText = (profile.hashrate || 0) + ' TH/s';
+            
             renderBalance();
             startPassiveIncome();
+        } catch (err) {
+            console.error("Ошибка при входе:", err);
+            document.getElementById('user-name').innerText = "Ошибка подключения";
         }
+    }
 
-        function renderBalance() {
-            document.getElementById('main-balance').innerText = '$' + currentBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        }
+    function renderBalance() {
+        document.getElementById('main-balance').innerText = '$' + currentBalance.toLocaleString('en-US', {
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2
+        });
+    }
 
-        function startPassiveIncome() {
-            setInterval(() => {
+    function startPassiveIncome() {
+        setInterval(() => {
+            if (currentBalance > 0) {
                 currentBalance += 0.01;
                 renderBalance();
-                // Сохраняем в базу раз в 15 секунд, чтобы не спамить запросами
+                // Сохраняем раз в 10 сек (шанс 10% каждые 3 сек)
                 if (Math.random() > 0.9) saveToDB();
-            }, 3000);
-        }
-
-        async function saveToDB() {
-            if (!currentUser) return;
-            await supabase.from('profiles').update({ balance: currentBalance }).eq('id', currentUser.id);
-        }
-
-        // АДМИНКА (5 кликов по нику)
-        document.getElementById('user-name').addEventListener('click', () => {
-            adminClicks++;
-            if (adminClicks >= 5) {
-                adminClicks = 0;
-                const pass = prompt("Admin Key:");
-                if (pass === "777") openAdmin();
             }
-        });
-
-        async function openAdmin() {
-            const { data: deps } = await supabase.from('deposits').select('*, profiles(username)').eq('status', 'pending');
-            let html = `<div id="adm" style="position:fixed;inset:0;background:#0b0f1a;z-index:9999;padding:20px;overflow:auto;">
-                <h2 class="text-xl font-bold mb-4">Pending Deposits</h2>
-                <button onclick="document.getElementById('adm').remove()" class="mb-4 text-red-500">[CLOSE]</button>`;
-            
-            deps?.forEach(d => {
-                html += `<div class="glass p-4 mb-2 rounded-xl">
-                    <p>User: @${d.profiles?.username}</p>
-                    <p class="text-blue-400">${d.tier_name}: ${d.amount}</p>
-                    <button onclick="approve('${d.id}', '${d.user_id}', '${d.amount}')" class="bg-emerald-600 px-4 py-2 rounded mt-2 text-xs">APPROVE</button>
-                </div>`;
-            });
-            document.body.insertAdjacentHTML('beforeend', html + `</div>`);
-        }
-
-        async function approve(did, uid, amt) {
-            const val = parseFloat(amt.replace('$', '').replace(',', ''));
-            const { data: p } = await supabase.from('profiles').select('balance').eq('id', uid).single();
-            await supabase.from('profiles').update({ balance: parseFloat(p.balance) + val }).eq('id', uid);
-            await supabase.from('deposits').update({ status: 'completed' }).eq('id', did);
-            alert("Success!");
-            document.getElementById('adm').remove();
-            openAdmin();
-        }
-
-        // ОСТАЛЬНОЕ
-        function nav(id) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active-nav');
-        }
-
-        function openModal(n, p) {
-            document.getElementById('modal-node-name').innerText = n;
-            document.getElementById('min-amount').innerText = p;
-            document.getElementById('payment-modal').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('payment-modal').style.display = 'none'; }
-
-        async function simulatePayment() {
-            const btn = document.getElementById('pay-btn');
-            btn.innerText = 'Checking...';
-            await supabase.from('deposits').insert([{ 
-                user_id: currentUser.id, 
-                amount: document.getElementById('min-amount').innerText, 
-                tier_name: document.getElementById('modal-node-name').innerText 
-            }]);
-            setTimeout(() => {
-                tg.showAlert('Транзакция отправлена на проверку. Ожидайте подтверждения.');
-                btn.innerText = 'Проверить транзакцию';
-                closeModal();
-            }, 1500);
-        }
-
-        setInterval(() => {
-            const div = document.createElement('div');
-            div.innerHTML = `<span class="text-slate-700">[${new Date().toLocaleTimeString()}]</span> SCAN... <span class="text-emerald-500">+$${(Math.random()*2).toFixed(2)}</span>`;
-            document.getElementById('terminal-lines').prepend(div);
         }, 3000);
+    }
 
-        init();
-    </script>
-</body>
-</html>
+    async function saveToDB() {
+        if (!currentUser) return;
+        await supabaseClient.from('profiles').update({ balance: currentBalance }).eq('id', currentUser.id);
+    }
+
+    // Логика кнопок навигации, модалок и админки (оставь как была выше)
+    // ... (функции nav, openModal, closeModal, simulatePayment, openAdmin)
+    
+    // Запуск
+    init();
+</script>
