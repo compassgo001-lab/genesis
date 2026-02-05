@@ -53,26 +53,25 @@
     </div>
 
     <header class="p-6 flex justify-between items-center border-b border-white/5 bg-slate-900/20">
-        <div>
+        <div id="admin-trigger">
             <h1 class="text-xs font-black tracking-[0.3em] text-blue-500 uppercase">Genesis</h1>
-            <p id="user-name" class="text-[10px] text-slate-500 font-medium italic">Загрузка профиля...</p>
+            <p id="user-name" class="text-[10px] text-slate-500 font-medium italic cursor-pointer">Загрузка профиля...</p>
         </div>
         <div class="text-right">
-            <p class="text-[9px] text-slate-500 uppercase">Загрузка сети</p>
-            <p class="text-xs font-bold text-orange-400">82.4%</p>
+            <p class="text-[9px] text-slate-500 uppercase">Сеть</p>
+            <p class="text-xs font-bold text-emerald-400">ONLINE</p>
         </div>
     </header>
 
     <section id="dashboard" class="tab-content active p-6">
         <div class="node-container mb-8">
             <div class="node-ring"></div>
-            <div class="node-ring" style="animation-duration: 5s; direction: reverse; opacity: 0.3;"></div>
             <div class="node-core"></div>
         </div>
         
         <div class="text-center mb-8">
             <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] mb-1">Портфель активов</p>
-            <h2 id="main-balance" class="text-5xl font-bold tracking-tighter">$0.00</h2>
+            <h2 id="main-balance" class="text-5xl font-bold tracking-tighter">$...</h2>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -91,43 +90,23 @@
         <h3 class="text-xl font-bold mb-6">Доступные узлы</h3>
         <div class="space-y-4">
             <div class="glass rounded-[32px] p-6 border-l-4 border-blue-500">
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="font-bold">Mainnet Node</h4>
-                    <span class="bg-blue-500/10 text-blue-400 text-[10px] px-2 py-1 rounded">Lvl 1</span>
-                </div>
+                <h4 class="font-bold">Mainnet Node</h4>
                 <p class="text-3xl font-bold mb-4">$1,000</p>
-                <button onclick="openModal('Mainnet Node', '$1,000')" class="w-full py-4 rounded-2xl bg-blue-600 font-bold text-sm">Арендовать слот</button>
+                <button onclick="openModal('Mainnet Node', '$1,000')" class="w-full py-4 rounded-2xl bg-blue-600 font-bold text-sm">Арендовать</button>
             </div>
-            
-            <div class="glass rounded-[32px] p-6 border-l-4 border-amber-500 bg-amber-500/5 shadow-lg shadow-amber-500/5">
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="font-bold text-amber-500">Quantum Engine</h4>
-                    <span class="bg-amber-500/20 text-amber-500 text-[10px] px-2 py-1 rounded">Lvl 3</span>
-                </div>
-                <p class="text-3xl font-bold mb-1">$50,000</p>
-                <p class="text-[10px] text-amber-500/60 mb-6 italic">Осталось слотов: 2/10</p>
-                <button onclick="openModal('Quantum Engine', '$50,000')" class="w-full py-4 rounded-2xl bg-amber-600 text-black font-black text-sm">Активировать доступ</button>
+            <div class="glass rounded-[32px] p-6 border-l-4 border-amber-500">
+                <h4 class="font-bold text-amber-500">Quantum Engine</h4>
+                <p class="text-3xl font-bold mb-4">$50,000</p>
+                <button onclick="openModal('Quantum Engine', '$50,000')" class="w-full py-4 rounded-2xl bg-amber-600 text-black font-black text-sm">Активировать</button>
             </div>
-        </div>
-    </section>
-
-    <section id="network" class="tab-content p-6 text-center pt-10">
-        <div class="glass rounded-[32px] p-8">
-            <div class="w-16 h-16 bg-blue-500/10 rounded-full mx-auto mb-4 border border-blue-500/20 flex items-center justify-center">🤝</div>
-            <h2 class="text-xl font-bold mb-2 uppercase tracking-tight">Сеть валидаторов</h2>
-            <p class="text-xs text-slate-500 mb-8">Вы получаете 10% от ежедневного дохода каждого приглашенного участника.</p>
-            <button class="w-full py-4 rounded-xl border border-dashed border-blue-500 text-blue-400 font-bold text-sm">Скопировать реф-ссылку</button>
         </div>
     </section>
 
     <section id="vault" class="tab-content p-6">
-        <div class="glass rounded-[32px] p-8 text-center border-t border-emerald-500/20">
-            <p class="text-[10px] text-slate-500 uppercase mb-2 font-black tracking-widest">Баланс сейфа</p>
+        <div class="glass rounded-[32px] p-8 text-center">
+            <p class="text-[10px] text-slate-500 uppercase mb-2">Баланс сейфа</p>
             <h2 class="text-4xl font-bold mb-8">$3,120.45</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <button class="py-4 bg-white text-black font-bold rounded-2xl text-[10px] uppercase">Вывод</button>
-                <button class="py-4 bg-emerald-600 text-white font-bold rounded-2xl text-[10px] uppercase">Реинвест</button>
-            </div>
+            <button class="w-full py-4 bg-white text-black font-bold rounded-2xl text-[10px] uppercase">Вывод средств</button>
         </div>
     </section>
 
@@ -138,132 +117,139 @@
     </section>
 
     <nav class="fixed bottom-0 left-0 right-0 h-20 glass border-t border-white/10 flex justify-around items-center z-50 px-2">
-        <button onclick="nav('dashboard')" class="nav-btn active-nav">
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Главная</span>
-        </button>
-        <button onclick="nav('infrastructure')" class="nav-btn">
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Узлы</span>
-        </button>
+        <button onclick="nav('dashboard')" class="nav-btn active-nav"><span class="text-[9px] uppercase font-bold">Главная</span></button>
+        <button onclick="nav('infrastructure')" class="nav-btn"><span class="text-[9px] uppercase font-bold">Узлы</span></button>
         <button onclick="nav('terminal')" class="nav-btn">
-            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center -mt-10 shadow-xl shadow-blue-600/40">
-                <span class="text-white text-[8px] font-black italic">EXE</span>
-            </div>
-            <span class="text-[9px] font-bold uppercase tracking-tighter mt-1">Терминал</span>
+            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center -mt-10">EXE</div>
+            <span class="text-[9px] uppercase font-bold mt-1">Консоль</span>
         </button>
-        <button onclick="nav('network')" class="nav-btn">
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Сеть</span>
-        </button>
-        <button onclick="nav('vault')" class="nav-btn">
-            <span class="text-[9px] font-bold uppercase tracking-tighter">Сейф</span>
-        </button>
+        <button onclick="nav('vault')" class="nav-btn"><span class="text-[9px] uppercase font-bold">Сейф</span></button>
     </nav>
 
     <script>
-        // --- КОНФИГУРАЦИЯ SUPABASE ---
+        // ДАННЫЕ SUPABASE
         const SUPABASE_URL = 'https://buvkhgfgrzmimsmyznpm.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1dmtoZ2ZncnptaW1zbXl6bnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyNDU3NjEsImV4cCI6MjA4NTgyMTc2MX0.g_ZvbjVu0wlUwDnE3KyRNb2cO69Oq6QHZnUD4hK4yHQ';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const tg = window.Telegram.WebApp;
         tg.expand();
-        
+
         let currentBalance = 0;
         let currentUser = null;
+        let adminClicks = 0;
 
-        // Инициализация пользователя
-        async function initUser() {
-            const user = tg.initDataUnsafe?.user || { id: 12345, username: 'local_test' }; // Для тестов вне ТГ
+        // ИНИЦИАЛИЗАЦИЯ
+        async function init() {
+            const user = tg.initDataUnsafe?.user || { id: 12345, username: 'test_user' };
             document.getElementById('user-name').innerText = 'ID: @' + user.username;
 
-            // Пробуем найти юзера в базе
-            let { data: profile, error } = await supabaseClient
-                .from('profiles')
-                .select('*')
-                .eq('id', user.id)
-                .single();
+            let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
             if (!profile) {
-                // Если юзера нет, регистрируем его
-                const { data, error: regError } = await supabaseClient
-                    .from('profiles')
-                    .insert([{ id: user.id, username: user.username }])
-                    .select()
-                    .single();
+                const { data } = await supabase.from('profiles').insert([{ id: user.id, username: user.username }]).select().single();
                 profile = data;
             }
 
-            if (profile) {
-                currentUser = profile;
-                currentBalance = parseFloat(profile.balance);
-                document.getElementById('hashrate-val').innerText = profile.hashrate + ' TH/s';
-                updateBalanceDisplay();
+            currentUser = profile;
+            currentBalance = parseFloat(profile.balance);
+            document.getElementById('hashrate-val').innerText = profile.hashrate + ' TH/s';
+            renderBalance();
+            startPassiveIncome();
+        }
+
+        function renderBalance() {
+            document.getElementById('main-balance').innerText = '$' + currentBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function startPassiveIncome() {
+            setInterval(() => {
+                currentBalance += 0.01;
+                renderBalance();
+                // Сохраняем в базу раз в 15 секунд, чтобы не спамить запросами
+                if (Math.random() > 0.9) saveToDB();
+            }, 3000);
+        }
+
+        async function saveToDB() {
+            if (!currentUser) return;
+            await supabase.from('profiles').update({ balance: currentBalance }).eq('id', currentUser.id);
+        }
+
+        // АДМИНКА (5 кликов по нику)
+        document.getElementById('user-name').addEventListener('click', () => {
+            adminClicks++;
+            if (adminClicks >= 5) {
+                adminClicks = 0;
+                const pass = prompt("Admin Key:");
+                if (pass === "777") openAdmin();
             }
+        });
+
+        async function openAdmin() {
+            const { data: deps } = await supabase.from('deposits').select('*, profiles(username)').eq('status', 'pending');
+            let html = `<div id="adm" style="position:fixed;inset:0;background:#0b0f1a;z-index:9999;padding:20px;overflow:auto;">
+                <h2 class="text-xl font-bold mb-4">Pending Deposits</h2>
+                <button onclick="document.getElementById('adm').remove()" class="mb-4 text-red-500">[CLOSE]</button>`;
+            
+            deps?.forEach(d => {
+                html += `<div class="glass p-4 mb-2 rounded-xl">
+                    <p>User: @${d.profiles?.username}</p>
+                    <p class="text-blue-400">${d.tier_name}: ${d.amount}</p>
+                    <button onclick="approve('${d.id}', '${d.user_id}', '${d.amount}')" class="bg-emerald-600 px-4 py-2 rounded mt-2 text-xs">APPROVE</button>
+                </div>`;
+            });
+            document.body.insertAdjacentHTML('beforeend', html + `</div>`);
         }
 
-        function updateBalanceDisplay() {
-            document.getElementById('main-balance').innerText = '$' + currentBalance.toLocaleString('ru-RU', {minimumFractionDigits: 2});
+        async function approve(did, uid, amt) {
+            const val = parseFloat(amt.replace('$', '').replace(',', ''));
+            const { data: p } = await supabase.from('profiles').select('balance').eq('id', uid).single();
+            await supabase.from('profiles').update({ balance: parseFloat(p.balance) + val }).eq('id', uid);
+            await supabase.from('deposits').update({ status: 'completed' }).eq('id', did);
+            alert("Success!");
+            document.getElementById('adm').remove();
+            openAdmin();
         }
 
-        // Навигация
+        // ОСТАЛЬНОЕ
         function nav(id) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
             document.getElementById(id).classList.add('active');
-            if(event) event.currentTarget.classList.add('active-nav');
-            tg.HapticFeedback.impactOccurred('light');
+            event.currentTarget.classList.add('active-nav');
         }
 
-        function openModal(name, price) {
-            document.getElementById('modal-node-name').innerText = name;
-            document.getElementById('min-amount').innerText = price;
+        function openModal(n, p) {
+            document.getElementById('modal-node-name').innerText = n;
+            document.getElementById('min-amount').innerText = p;
             document.getElementById('payment-modal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('payment-modal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('payment-modal').style.display = 'none'; }
 
-        // Реальная отправка заявки в базу
         async function simulatePayment() {
             const btn = document.getElementById('pay-btn');
-            const tier = document.getElementById('modal-node-name').innerText;
-            const amount = document.getElementById('min-amount').innerText;
-            
-            btn.innerHTML = 'Связь с блокчейном...';
-            btn.disabled = true;
-
-            const { error } = await supabaseClient
-                .from('deposits')
-                .insert([{ user_id: tg.initDataUnsafe?.user?.id || 12345, amount: amount, tier_name: tier }]);
-
+            btn.innerText = 'Checking...';
+            await supabase.from('deposits').insert([{ 
+                user_id: currentUser.id, 
+                amount: document.getElementById('min-amount').innerText, 
+                tier_name: document.getElementById('modal-node-name').innerText 
+            }]);
             setTimeout(() => {
-                tg.showAlert('Заявка принята! После подтверждения транзакции в сети TRC-20 (обычно 5-15 мин), ваш хэшрейт и баланс будут обновлены.');
-                btn.innerHTML = 'Проверить транзакцию';
-                btn.disabled = false;
+                tg.showAlert('Транзакция отправлена на проверку. Ожидайте подтверждения.');
+                btn.innerText = 'Проверить транзакцию';
                 closeModal();
-            }, 2000);
+            }, 1500);
         }
 
-        // Живой инкремент баланса (каждые 3 сек)
         setInterval(() => {
-            if (currentBalance > 0) {
-                currentBalance += 0.01;
-                updateBalanceDisplay();
-            }
+            const div = document.createElement('div');
+            div.innerHTML = `<span class="text-slate-700">[${new Date().toLocaleTimeString()}]</span> SCAN... <span class="text-emerald-500">+$${(Math.random()*2).toFixed(2)}</span>`;
+            document.getElementById('terminal-lines').prepend(div);
         }, 3000);
 
-        // Терминал
-        const termLines = document.getElementById('terminal-lines');
-        function addTermLine() {
-            const div = document.createElement('div');
-            div.innerHTML = `<span class="text-slate-700">[${new Date().toLocaleTimeString()}]</span> ANALYZE... <span class="text-blue-500 font-bold">SUCCESS +$${(Math.random()*2).toFixed(2)}</span>`;
-            termLines.prepend(div);
-            if (termLines.children.length > 15) termLines.removeChild(termLines.lastChild);
-        }
-        setInterval(addTermLine, 4000);
-
-        // Старт
-        initUser();
+        init();
     </script>
 </body>
 </html>
